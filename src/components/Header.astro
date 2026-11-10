@@ -1,0 +1,57 @@
+---
+import Wordmark from './Wordmark.astro';
+const onHome = Astro.url.pathname === '/';
+const section = (id: string) => `${onHome ? '' : '/'}#${id}`;
+---
+<header class="site-header container">
+  <Wordmark />
+  <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="primary-navigation" hidden>
+    <span>Menu</span><span class="menu-icon" aria-hidden="true"><i></i><i></i></span>
+  </button>
+  <nav id="primary-navigation" aria-label="Primary navigation">
+    <a href={section('services')}>Services</a>
+    <a href={section('about')}>About</a>
+    <a href={section('contact')}>Contact</a>
+    <a class="button header-cta" href={section('contact')}>Discuss Your Project</a>
+  </nav>
+</header>
+<script>
+  const toggle = document.querySelector<HTMLButtonElement>('.menu-toggle');
+  const nav = document.querySelector<HTMLElement>('#primary-navigation');
+  if (toggle && nav) {
+    toggle.hidden = false;
+    nav.dataset.enhanced = 'true';
+    const close = () => { toggle.setAttribute('aria-expanded', 'false'); nav.dataset.open = 'false'; };
+    toggle.addEventListener('click', () => {
+      const open = toggle.getAttribute('aria-expanded') !== 'true';
+      toggle.setAttribute('aria-expanded', String(open));
+      nav.dataset.open = String(open);
+    });
+    nav.addEventListener('click', (event) => { if ((event.target as Element).closest('a')) close(); });
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape' && toggle.getAttribute('aria-expanded') === 'true') { close(); toggle.focus(); }
+    });
+    document.addEventListener('click', (event) => {
+      if (!(event.target as Element).closest('.site-header')) close();
+    });
+    matchMedia('(min-width: 701px)').addEventListener('change', close);
+  }
+</script>
+<style>
+  .site-header { min-height: 6rem; display: flex; align-items: center; justify-content: space-between; gap: 2rem; position: relative; }
+  nav { display: flex; align-items: center; gap: 2.25rem; }
+  nav > a:not(.button) { text-decoration: none; font-size: 0.9375rem; font-weight: 500; }
+  nav > a:not(.button):hover { text-decoration: underline; }
+  .header-cta { min-height: 2.75rem; padding: 0.7rem 1.25rem; font-size: 0.875rem; }
+  .menu-toggle { display: none; align-items: center; gap: 0.65rem; background: transparent; border: 1px solid var(--border); padding: 0.65rem 0.8rem; border-radius: var(--radius); color: var(--foreground); }
+  .menu-icon { display: grid; gap: 5px; }
+  .menu-icon i { height: 1.5px; width: 15px; background: currentColor; }
+  @media (max-width: 700px) {
+    .site-header { min-height: 5rem; gap: 1rem; flex-wrap: wrap; padding-block: 1rem; }
+    .menu-toggle { display: inline-flex; }
+    nav { width: 100%; flex-wrap: wrap; gap: 1rem 1.5rem; padding: 0.75rem 0; }
+    nav[data-enhanced='true'] { display: none; }
+    nav[data-enhanced='true'][data-open='true'] { display: flex; }
+    .header-cta { width: 100%; margin-top: 0.25rem; }
+  }
+</style>

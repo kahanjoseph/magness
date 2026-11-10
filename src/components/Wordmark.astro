@@ -1,0 +1,14 @@
+---
+interface Props { compact?: boolean }
+const { compact = false } = Astro.props;
+---
+<a class:list={['wordmark', { compact }]} href="/" aria-label="MAGNESS Software Consulting, home">
+  <span class="name">MAGNESS</span>
+  {!compact && <span class="descriptor">SOFTWARE CONSULTING</span>}
+</a>
+<style>
+  .wordmark { display: inline-flex; flex-direction: column; gap: 0.45rem; text-decoration: none; flex-shrink: 0; }
+  .name { font-size: 1.25rem; font-weight: 650; line-height: 1; letter-spacing: 0.27em; }
+  .descriptor { font-size: 0.48rem; font-weight: 550; letter-spacing: 0.3em; color: var(--muted-foreground); }
+  .compact .name { font-size: 0.9rem; }
+</style>
