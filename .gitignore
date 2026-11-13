@@ -11,3 +11,6 @@ playwright-report/
 .DS_Store
 Thumbs.db
 .vscode/
+.codex-attachments/
+output/
+tmp/
