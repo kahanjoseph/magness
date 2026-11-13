@@ -2,7 +2,7 @@
 interface Props { compact?: boolean }
 const { compact = false } = Astro.props;
 ---
-<a class:list={['wordmark inline-flex shrink-0 flex-col gap-[calc(.45rem*var(--space-scale))] no-underline', { compact }]} href="/" aria-label="MAGNESS Software Consulting, home">
-  <span class:list={['name font-[650] leading-none tracking-[.27em]', compact ? 'text-[.9rem]' : 'text-xl']}>MAGNESS</span>
-  {!compact && <span class="descriptor text-[.625rem] font-[550] tracking-[.22em] text-muted-foreground">SOFTWARE CONSULTING</span>}
+<a class:list={['wordmark inline-flex shrink-0 flex-col gap-[calc(.4rem*var(--space-scale))] no-underline', { compact }]} href="/" aria-label="MAGNESS Software Consulting, home">
+  <span class:list={['name font-[650] leading-none tracking-[.12em]', compact ? 'text-[.9rem]' : 'text-xl']}>MAGNESS</span>
+  {!compact && <span class="descriptor text-[.5625rem] leading-none font-[550] tracking-[.06em] text-muted-foreground">SOFTWARE CONSULTING</span>}
 </a>
