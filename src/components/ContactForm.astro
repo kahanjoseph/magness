@@ -28,7 +28,7 @@ const siteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY;
     <label for="contact-website">Leave this field empty</label>
     <input id="contact-website" name="website" tabindex="-1" autocomplete="off" />
   </div>
-  {siteKey && <div class="cf-turnstile" data-sitekey={siteKey} data-theme="light" data-size="flexible"></div>}
+  {siteKey && <div class="cf-turnstile" data-sitekey={siteKey} data-theme="dark" data-size="flexible"></div>}
   <button class="button self-start" type="submit">Send project details</button>
   <p id="form-status" class="form-status text-[.9375rem] text-destructive data-[success=true]:text-accent" role="status" aria-live="polite" tabindex="-1" hidden></p>
   <p class="privacy-note text-xs leading-[1.6] text-muted-foreground">Your details are used to respond to your enquiry. <a href="/privacy/">Privacy</a></p>
