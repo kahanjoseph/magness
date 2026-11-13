@@ -115,6 +115,18 @@ h3 { font-size: calc(clamp(1.5rem, 2vw, 2rem) * var(--heading-scale)); letter-sp
 img, svg { display: block; max-width: 100%; }
 [hidden] { display: none !important; }
 .container { width: min(var(--content-width), calc(100% - var(--space-gutter) * 2)); margin-inline: auto; }
+.hero { position: relative; isolation: isolate; }
+.hero::before {
+  content: '';
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(90deg, var(--background) 12%, transparent 85%),
+    repeating-radial-gradient(ellipse at 90% 48%, transparent 0 2.8rem, color-mix(in srgb, var(--accent) 12%, transparent) 2.85rem 2.9rem, transparent 2.95rem 5.6rem),
+    radial-gradient(ellipse at 88% 48%, color-mix(in srgb, var(--brand-bright) 38%, var(--background)), var(--background) 65%);
+}
 .section-shell { width: min(var(--content-width), calc(100% - var(--space-gutter) * 2)); margin-inline: auto; border-radius: var(--radius-panel); }
 .section-shell .container { width: calc(100% - 6rem * var(--space-scale)); }
 .split { display: grid; grid-template-columns: 0.8fr 1fr; gap: var(--space-layout); }

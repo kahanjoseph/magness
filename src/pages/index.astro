@@ -2,15 +2,13 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import ContactForm from '../components/ContactForm.astro';
 import { services } from '../data/services';
-// The same previous-role experience described in the About section.
-const pastWork = ['Custom CRMs and ERPs', 'Order and production automation', 'Reporting dashboards', 'E-commerce systems', 'Web scraping and data collection', 'AI integrations'];
 const contactEnabled = import.meta.env.PUBLIC_CONTACT_FORM_ENABLED === 'true' && Boolean(import.meta.env.PUBLIC_TURNSTILE_SITE_KEY);
 ---
 <BaseLayout>
   <section class="hero container pt-[calc(6.5rem*var(--space-scale))] pb-(--space-section) max-[1000px]:pt-[calc(5rem*var(--space-scale))] max-[1000px]:pb-[calc(6rem*var(--space-scale))] max-[700px]:pt-[calc(3.5rem*var(--space-scale))] max-[700px]:pb-[calc(4.5rem*var(--space-scale))]" aria-labelledby="hero-heading">
     <p data-hero style="--i:0" class="eyebrow mb-[calc(2rem*var(--space-scale))] text-[.72rem] font-[650] tracking-[.13em] text-accent uppercase">Independent software consulting <span class="mx-[calc(.55rem*var(--space-scale))] text-brand-marker" aria-hidden="true">/</span> Built for the way you work</p>
     <h1 id="hero-heading" data-hero style="--i:1" class="text-[calc(clamp(3.4rem,7vw,6.75rem)*var(--heading-scale))] leading-[.99] font-[550] tracking-[-.065em] max-[700px]:text-[calc(clamp(2.9rem,10vw,4.3rem)*var(--heading-scale))] max-[700px]:leading-[1.04] max-[700px]:tracking-[-.055em]">Software built<br class="max-[700px]:hidden" /> around <em class="signature inline-block tracking-[-.04em] whitespace-nowrap max-[700px]:whitespace-normal">your business.</em></h1>
-    <div class="hero-body mt-[calc(3rem*var(--space-scale))] grid grid-cols-[minmax(0,35rem)_minmax(0,21rem)] items-end justify-between gap-(--space-layout) max-[1000px]:grid-cols-1 max-[1000px]:gap-[calc(3rem*var(--space-scale))] max-[700px]:mt-[calc(2rem*var(--space-scale))] max-[700px]:gap-[calc(2.5rem*var(--space-scale))]">
+    <div class="hero-body mt-[calc(3rem*var(--space-scale))] max-[700px]:mt-[calc(2rem*var(--space-scale))]">
       <div>
         <p data-hero style="--i:2" class="max-w-[35rem] text-xl leading-[1.55] max-[700px]:max-w-[32rem] max-[700px]:text-[1.0625rem]">Build the tools you need, connect the systems you rely on, and simplify the work in between. MAGNESS provides custom software development with a direct line to the developer building your solution.</p>
         <div data-hero style="--i:3" class="hero-actions mt-[calc(2rem*var(--space-scale))] flex flex-wrap gap-[calc(.75rem*var(--space-scale))] max-[700px]:mt-[calc(1.5rem*var(--space-scale))] [&_.button]:min-w-[15.5rem] max-[700px]:[&_.button]:min-w-0 max-[700px]:[&_.button]:flex-[1_1_auto]">
@@ -18,14 +16,6 @@ const contactEnabled = import.meta.env.PUBLIC_CONTACT_FORM_ENABLED === 'true' &&
           <a class="button button-outline" href="#services">Explore services</a>
         </div>
       </div>
-      <aside data-hero style="--i:4" class="hero-work border-t border-border pt-[calc(1.25rem*var(--space-scale))] max-[1000px]:max-w-[28rem]" aria-labelledby="hero-work-heading">
-        <p id="hero-work-heading" class="text-[.72rem] font-[650] tracking-[.13em] text-muted-foreground uppercase">What I’ve built</p>
-        <ul class="mt-(--space-sm) list-none p-0">
-          {pastWork.map((item) => (
-            <li class="relative border-b border-border py-[calc(.7rem*var(--space-scale))] pl-[calc(1.25rem*var(--space-scale))] text-[.9375rem] before:absolute before:top-[1.3rem] before:left-0 before:h-[.45rem] before:w-[.45rem] before:rounded-[1px] before:bg-brand-marker before:content-[''] last:border-b-0">{item}</li>
-          ))}
-        </ul>
-      </aside>
     </div>
   </section>
 
