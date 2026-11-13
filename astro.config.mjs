@@ -7,7 +7,8 @@ import tailwindcss from '@tailwindcss/vite';
 export default defineConfig({
   site: 'https://magness.dev',
   output: 'static',
-  adapter: node({ mode: 'standalone' }),
+  adapter: node({ mode: 'standalone', bodySizeLimit: 16000 }),
+  security: { allowedDomains: [{ hostname: 'magness.dev', protocol: 'https' }] },
   integrations: [react(), sitemap()],
   vite: { plugins: [tailwindcss()] },
 });

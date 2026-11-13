@@ -4,11 +4,11 @@ import { createRateLimiter, handleContact, validateEnquiry, type ContactConfig }
 import { sendProjectEnquiry } from '../src/server/email.ts';
 
 const enquiry = { name: 'Test Visitor', email: 'visitor@example.com', company: '', message: 'I would like to discuss a custom internal application.' };
-const config: ContactConfig = { origin: 'https://magness.dev', email: { provider: 'resend', apiKey: 'test-only', from: 'MAGNESS <website@example.com>', to: 'inbox@example.com' } };
+const config: ContactConfig = { origin: 'https://magness.dev', turnstileSecret: 'test-secret', email: { provider: 'resend', apiKey: 'test-only', from: 'MAGNESS <website@example.com>', to: 'inbox@example.com' } };
 const request = (body: unknown = enquiry, headers: Record<string, string> = {}) => new Request('https://magness.dev/api/contact', {
-  method: 'POST', headers: { Origin: config.origin, Accept: 'application/json', 'Content-Type': 'application/json', ...headers }, body: JSON.stringify(body),
+  method: 'POST', headers: { Origin: config.origin, Accept: 'application/json', 'Content-Type': 'application/json', ...headers }, body: JSON.stringify({ 'cf-turnstile-response': 'test-token', ...(typeof body === 'object' && body !== null ? body : {}) }),
 });
-const unrestricted = { allowRequest: () => true };
+const unrestricted = { allowRequest: () => true, fetcher: async () => Response.json({ success: true, hostname: 'magness.dev' }) };
 
 test('valid enquiries are normalized and delivered once', async () => {
   let sends = 0;
@@ -40,6 +40,8 @@ test('honeypot submissions are discarded', async () => {
 test('missing configuration and provider failures never claim success', async () => {
   const unconfigured = await handleContact(request(), 'client', { ...config, email: {} }, unrestricted);
   assert.equal(unconfigured.status, 503);
+  const unprotected = await handleContact(request(), 'client', { ...config, turnstileSecret: undefined }, { ...unrestricted, send: async () => assert.fail('must not send without Turnstile') });
+  assert.equal(unprotected.status, 503);
   const rejected = await handleContact(request(), 'client', config, { ...unrestricted, send: async () => { throw new Error('provider unavailable'); } });
   assert.equal(rejected.status, 502);
   assert.doesNotMatch(await rejected.text(), /test-only|provider unavailable/);
@@ -73,8 +75,8 @@ test('rate-limited responses advise when to retry', async () => {
   assert.equal(response.headers.get('retry-after'), '600');
 });
 
-test('native form submissions work without client JavaScript', async () => {
-  const native = new Request('https://magness.dev/api/contact', { method: 'POST', headers: { Origin: config.origin, 'Content-Type': 'application/x-www-form-urlencoded', Accept: 'text/html' }, body: new URLSearchParams(enquiry) });
+test('native form submissions can deliver a verified token', async () => {
+  const native = new Request('https://magness.dev/api/contact', { method: 'POST', headers: { Origin: config.origin, 'Content-Type': 'application/x-www-form-urlencoded', Accept: 'text/html' }, body: new URLSearchParams({ ...enquiry, 'cf-turnstile-response': 'test-token' }) });
   const response = await handleContact(native, 'client', config, { ...unrestricted, send: async () => {} });
   assert.equal(response.status, 200);
   assert.match(response.headers.get('content-type') || '', /text\/html/);
@@ -83,7 +85,7 @@ test('native form submissions work without client JavaScript', async () => {
 
 test('Turnstile requires a valid token and matching hostname', async () => {
   const protectedConfig = { ...config, turnstileSecret: 'test-secret' };
-  assert.equal((await handleContact(request(), 'client', protectedConfig, unrestricted)).status, 422);
+  assert.equal((await handleContact(request({ ...enquiry, 'cf-turnstile-response': '' }), 'client', protectedConfig, unrestricted)).status, 422);
   const response = await handleContact(request({ ...enquiry, 'cf-turnstile-response': 'test-token' }), 'client', protectedConfig, {
     ...unrestricted,
     fetcher: async () => Response.json({ success: true, hostname: 'wrong.example' }),

@@ -2,13 +2,7 @@
 interface Props { compact?: boolean }
 const { compact = false } = Astro.props;
 ---
-<a class:list={['wordmark', { compact }]} href="/" aria-label="MAGNESS Software Consulting, home">
-  <span class="name">MAGNESS</span>
-  {!compact && <span class="descriptor">SOFTWARE CONSULTING</span>}
+<a class:list={['wordmark inline-flex shrink-0 flex-col gap-[calc(.45rem*var(--space-scale))] no-underline', { compact }]} href="/" aria-label="MAGNESS Software Consulting, home">
+  <span class:list={['name font-[650] leading-none tracking-[.27em]', compact ? 'text-[.9rem]' : 'text-xl']}>MAGNESS</span>
+  {!compact && <span class="descriptor text-[.625rem] font-[550] tracking-[.22em] text-muted-foreground">SOFTWARE CONSULTING</span>}
 </a>
-<style>
-  .wordmark { display: inline-flex; flex-direction: column; gap: 0.45rem; text-decoration: none; flex-shrink: 0; }
-  .name { font-size: 1.25rem; font-weight: 650; line-height: 1; letter-spacing: 0.27em; }
-  .descriptor { font-size: 0.48rem; font-weight: 550; letter-spacing: 0.3em; color: var(--muted-foreground); }
-  .compact .name { font-size: 0.9rem; }
-</style>

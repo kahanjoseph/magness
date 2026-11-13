@@ -30,7 +30,7 @@ The standalone Node build serves the generated pages and `/api/contact`. Product
 - `src/components/`: navigation, wordmark, footer and progressively enhanced contact form.
 - `src/server/`: validation, spam protection and email delivery.
 
-The first build follows the latest user-supplied Claude Harbor direction: off-white, navy and teal; Geist body type; an italic serif headline; service rows rather than nested cards. Fonts are self-hosted from Fontsource packages. Their licenses ship with those packages. No employer code or assets are included.
+The first build follows the latest user-supplied Claude Harbor direction: warm off-white, navy and brass; the brand colors live only in the `:root` block of `global.css` (`src/styles/tokens.ts` exposes them to the favicon, theme color, palette studio and contact reply page); Geist body type; an italic serif headline; service rows rather than nested cards. Fonts are self-hosted from Fontsource packages. Their licenses ship with those packages. No employer code or assets are included.
 
 The CSS uses semantic tokens compatible with future shadcn components. React and shadcn components can be introduced when an interaction warrants them; simple content and form fields remain native HTML.
 
@@ -47,9 +47,9 @@ The form sends one notification to the configured inbox with the visitor as Repl
 
 Resend API details are isolated in `src/server/email.ts`. A future provider requires its own adapter before `EMAIL_PROVIDER` can select it; changing the key alone does not make arbitrary APIs compatible. Sender verification and DNS changes remain provider setup tasks.
 
-Spam protection includes a honeypot, origin checks, bounded input, and a process-local limit of five attempts per client address per ten minutes. For public launch, configure both Turnstile keys in `.env.example`; rebuild after changing the public key. The secret stays on the server. The site sends no submission content to Turnstile.
+Spam protection includes a honeypot, origin checks, bounded input, required server-side Turnstile verification, and a process-local limit of five attempts per client address per ten minutes. Configure both Turnstile keys before enabling the form. The public site key and `PUBLIC_CONTACT_FORM_ENABLED` flag are embedded at build time; rebuild after changing them. `CONTACT_FORM_ENABLED` is a separate runtime flag, and the secret stays on the server. Missing email or Turnstile credentials fail closed. The site sends the Turnstile token, not the enquiry content, to the validation API.
 
-Before deploying behind a reverse proxy, verify client-address forwarding against the Node adapter and configure trusted proxy behavior. Do not trust arbitrary forwarded headers. The in-memory limiter is for one server and resets on restart; use a shared or edge limiter for multiple instances. Configure request timeouts/body limits at the reverse proxy as well.
+Production accepts `CF-Connecting-IP` only when `TRUST_CLOUDFLARE_IP=true`. Set that flag only after binding the Node listener to `127.0.0.1` and routing requests exclusively through the Cloudflare tunnel; otherwise clients could spoof the header. Missing or invalid Cloudflare client addresses fail closed in production. The in-memory limiter is for one server and resets on restart; use a shared or edge limiter for multiple instances. The Node adapter limits request bodies to 16,000 bytes.
 
 ## Before public launch
 

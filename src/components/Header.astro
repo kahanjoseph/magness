@@ -2,30 +2,47 @@
 import Wordmark from './Wordmark.astro';
 const onHome = Astro.url.pathname === '/';
 const section = (id: string) => `${onHome ? '' : '/'}#${id}`;
+const navLink = 'nav-link relative py-[calc(.5rem*var(--space-scale))] text-sm font-medium text-[var(--nav-text)] no-underline transition-colors duration-(--duration-normal) after:absolute after:bottom-0 after:left-0 after:h-0.5 after:w-full after:origin-left after:scale-x-0 after:bg-[var(--nav-accent)] after:transition-transform hover:after:scale-x-100 focus-visible:after:scale-x-100 max-[700px]:border-b max-[700px]:border-[var(--nav-line)] max-[700px]:py-[calc(.8rem*var(--space-scale))] max-[700px]:text-base';
 ---
-<header class="site-header container">
+<header class="site-header group/header sticky top-0 z-50 border-b border-transparent bg-background text-[var(--nav-text)] transition-[background,color,border-color,box-shadow] duration-(--duration-normal) [--nav-text:var(--foreground)] [--nav-muted:var(--muted-foreground)] [--nav-line:var(--border)] [--nav-accent:var(--accent)] [--nav-hover-bg:var(--foreground)] [--nav-hover-text:var(--background)] [&.lifted:not(.scrolled)]:border-border [&.scrolled]:border-inverse-border [&.scrolled]:bg-primary [&.scrolled]:shadow-[var(--shadow-header)] [&.scrolled]:[--nav-text:var(--primary-foreground)] [&.scrolled]:[--nav-muted:var(--inverse-muted)] [&.scrolled]:[--nav-line:var(--inverse-border)] [&.scrolled]:[--nav-accent:var(--brand-bright)] [&.scrolled]:[--nav-hover-bg:var(--brand-bright)] [&.scrolled]:[--nav-hover-text:var(--primary)] [&_.wordmark]:text-[var(--nav-text)] [&_.descriptor]:text-[var(--nav-muted)]">
+  <div class="header-inner container flex min-h-(--header-height) items-center justify-between gap-(--space-lg) max-[700px]:flex-wrap max-[700px]:gap-(--space-md) max-[700px]:py-(--space-md)">
   <Wordmark />
-  <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="primary-navigation" hidden>
-    <span>Menu</span><span class="menu-icon" aria-hidden="true"><i></i><i></i></span>
+  <button class="menu-toggle group/menu hidden items-center gap-[calc(.8rem*var(--space-scale))] rounded-md border border-[var(--nav-line)] bg-transparent px-[calc(.8rem*var(--space-scale))] py-[calc(.65rem*var(--space-scale))] text-[.8125rem] text-[var(--nav-text)] max-[700px]:inline-flex" type="button" aria-expanded="false" aria-controls="primary-navigation" hidden>
+    <span class="menu-label">Menu</span><span class="menu-icon grid gap-[5px]" aria-hidden="true"><i class="h-[1.5px] w-4 bg-current transition-transform group-aria-expanded/menu:translate-y-[3.25px] group-aria-expanded/menu:rotate-45"></i><i class="h-[1.5px] w-4 bg-current transition-transform group-aria-expanded/menu:-translate-y-[3.25px] group-aria-expanded/menu:-rotate-45"></i></span>
   </button>
-  <nav id="primary-navigation" aria-label="Primary navigation">
-    <a href={section('services')}>Services</a>
-    <a href={section('about')}>About</a>
-    <a href={section('contact')}>Contact</a>
-    <a class="button header-cta" href={section('contact')}>Discuss Your Project</a>
+  <nav id="primary-navigation" class="flex items-center gap-[calc(2rem*var(--space-scale))] max-[700px]:w-full max-[700px]:flex-col max-[700px]:items-stretch max-[700px]:gap-[calc(1.25rem*var(--space-scale))] max-[700px]:py-(--space-md) max-[700px]:data-[enhanced=true]:hidden max-[700px]:data-[open=true]:flex" aria-label="Primary navigation">
+    <div class="nav-links flex items-center gap-[calc(2.1rem*var(--space-scale))] border-r border-[var(--nav-line)] pr-[calc(2rem*var(--space-scale))] max-[700px]:flex-col max-[700px]:items-stretch max-[700px]:gap-0 max-[700px]:border-0 max-[700px]:pr-0"><a class={navLink} href={section('services')}>Services</a><a class={navLink} href={section('about')}>About</a><a class={navLink} href={section('contact')}>Contact</a></div>
+    <a class="header-cta inline-flex min-h-12 items-center justify-between gap-[calc(1.4rem*var(--space-scale))] rounded-md border border-[var(--nav-line)] px-(--space-md) py-[calc(.7rem*var(--space-scale))] text-[.8125rem] font-semibold text-[var(--nav-text)] no-underline transition-colors duration-(--duration-fast) hover:border-[var(--nav-hover-bg)] hover:bg-[var(--nav-hover-bg)] hover:text-[var(--nav-hover-text)] hover:[&_span]:text-[var(--nav-hover-text)] max-[700px]:w-full" href={section('contact')}>Discuss your project <span class="text-[1.1rem] text-[var(--nav-accent)]" aria-hidden="true">↗</span></a>
   </nav>
+  </div>
 </header>
 <script>
   const toggle = document.querySelector<HTMLButtonElement>('.menu-toggle');
   const nav = document.querySelector<HTMLElement>('#primary-navigation');
+  const header = document.querySelector<HTMLElement>('.site-header');
+  // Light header with a hairline once the page moves; it turns navy when the
+  // hero has scrolled under it, so the change arrives with the navy services panel.
+  const hero = document.querySelector<HTMLElement>('.hero');
+  const updateHeader = () => {
+    header?.classList.toggle('lifted', window.scrollY > 8);
+    if (!hero) header?.classList.toggle('scrolled', window.scrollY > 20);
+  };
+  window.addEventListener('scroll', updateHeader, { passive: true });
+  updateHeader();
+  if (hero && header) {
+    new IntersectionObserver(([entry]) => header.classList.toggle('scrolled', !entry.isIntersecting), {
+      rootMargin: `-${header.offsetHeight}px 0px 0px 0px`,
+    }).observe(hero);
+  }
   if (toggle && nav) {
     toggle.hidden = false;
     nav.dataset.enhanced = 'true';
-    const close = () => { toggle.setAttribute('aria-expanded', 'false'); nav.dataset.open = 'false'; };
+    const close = () => { toggle.setAttribute('aria-expanded', 'false'); nav.dataset.open = 'false'; toggle.querySelector('.menu-label')!.textContent = 'Menu'; };
     toggle.addEventListener('click', () => {
       const open = toggle.getAttribute('aria-expanded') !== 'true';
       toggle.setAttribute('aria-expanded', String(open));
       nav.dataset.open = String(open);
+      toggle.querySelector('.menu-label')!.textContent = open ? 'Close' : 'Menu';
     });
     nav.addEventListener('click', (event) => { if ((event.target as Element).closest('a')) close(); });
     document.addEventListener('keydown', (event) => {
@@ -37,21 +54,3 @@ const section = (id: string) => `${onHome ? '' : '/'}#${id}`;
     matchMedia('(min-width: 701px)').addEventListener('change', close);
   }
 </script>
-<style>
-  .site-header { min-height: 6rem; display: flex; align-items: center; justify-content: space-between; gap: 2rem; position: relative; }
-  nav { display: flex; align-items: center; gap: 2.25rem; }
-  nav > a:not(.button) { text-decoration: none; font-size: 0.9375rem; font-weight: 500; }
-  nav > a:not(.button):hover { text-decoration: underline; }
-  .header-cta { min-height: 2.75rem; padding: 0.7rem 1.25rem; font-size: 0.875rem; }
-  .menu-toggle { display: none; align-items: center; gap: 0.65rem; background: transparent; border: 1px solid var(--border); padding: 0.65rem 0.8rem; border-radius: var(--radius); color: var(--foreground); }
-  .menu-icon { display: grid; gap: 5px; }
-  .menu-icon i { height: 1.5px; width: 15px; background: currentColor; }
-  @media (max-width: 700px) {
-    .site-header { min-height: 5rem; gap: 1rem; flex-wrap: wrap; padding-block: 1rem; }
-    .menu-toggle { display: inline-flex; }
-    nav { width: 100%; flex-wrap: wrap; gap: 1rem 1.5rem; padding: 0.75rem 0; }
-    nav[data-enhanced='true'] { display: none; }
-    nav[data-enhanced='true'][data-open='true'] { display: flex; }
-    .header-cta { width: 100%; margin-top: 0.25rem; }
-  }
-</style>

@@ -1,17 +1,13 @@
 ---
 import Wordmark from './Wordmark.astro';
 ---
-<footer class="site-footer container">
-  <Wordmark compact />
-  <nav aria-label="Footer navigation">
-    <a href="/#services">Services</a><a href="/#about">About</a><a href="/#contact">Contact</a><a href="/privacy/">Privacy</a>
-  </nav>
-  <p>© {new Date().getFullYear()} MAGNESS Software Consulting</p>
+<footer class="site-footer container pt-[calc(5rem*var(--space-scale))] pb-[calc(3rem*var(--space-scale))] max-[700px]:pt-[calc(3.5rem*var(--space-scale))] max-[700px]:pb-[calc(2rem*var(--space-scale))]">
+  <p class="footer-signature max-w-[40rem] text-[calc(clamp(2rem,4vw,3.25rem)*var(--heading-scale))] leading-[1.05] font-[550] tracking-[-.045em]" aria-hidden="true">Software built around <em class="signature whitespace-nowrap">your business.</em></p>
+  <div class="mt-[calc(3.5rem*var(--space-scale))] flex items-center justify-between gap-[calc(2rem*var(--space-scale))] border-t border-border pt-[calc(1.75rem*var(--space-scale))] max-[900px]:flex-wrap max-[700px]:mt-[calc(2.5rem*var(--space-scale))] max-[700px]:flex-col max-[700px]:items-start max-[700px]:gap-[calc(1.5rem*var(--space-scale))]">
+    <Wordmark compact />
+    <nav class="flex flex-wrap gap-[calc(1.25rem*var(--space-scale))] text-[.8125rem]" aria-label="Footer navigation">
+      <a href="/#services">Services</a><a href="/#about">About</a><a href="/#contact">Contact</a><a href="/privacy/">Privacy</a>
+    </nav>
+    <p class="text-xs text-muted-foreground">© {new Date().getFullYear()} MAGNESS Software Consulting</p>
+  </div>
 </footer>
-<style>
-  .site-footer { display: flex; align-items: center; justify-content: space-between; gap: 2rem; padding-block: 4rem 3rem; }
-  nav { display: flex; flex-wrap: wrap; gap: 1.25rem; font-size: 0.8125rem; }
-  p { font-size: 0.75rem; color: var(--muted-foreground); }
-  @media (max-width: 900px) { .site-footer { flex-wrap: wrap; } }
-  @media (max-width: 700px) { .site-footer { align-items: flex-start; flex-direction: column; padding-block: 3rem 2rem; gap: 1.5rem; } }
-</style>

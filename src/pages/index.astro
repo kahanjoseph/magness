@@ -2,108 +2,107 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import ContactForm from '../components/ContactForm.astro';
 import { services } from '../data/services';
+// The same previous-role experience described in the About section.
+const pastWork = ['Custom CRMs and ERPs', 'Order and production automation', 'Reporting dashboards', 'E-commerce systems', 'Web scraping and data collection', 'AI integrations'];
+const contactEnabled = import.meta.env.PUBLIC_CONTACT_FORM_ENABLED === 'true' && Boolean(import.meta.env.PUBLIC_TURNSTILE_SITE_KEY);
 ---
 <BaseLayout>
-  <section class="hero container" aria-labelledby="hero-heading">
-    <h1 id="hero-heading">Software built<br class="desktop-break" /> around <em>your business.</em></h1>
-    <p>Build the tools you need, connect the systems you rely on, and simplify the work in between. MAGNESS provides custom software development with a direct line to the developer building your solution.</p>
-    <div class="hero-actions">
-      <a class="button" href="#contact">Discuss Your Project</a>
-      <a class="button button-outline" href="#services">Explore Services</a>
+  <section class="hero container pt-[calc(6.5rem*var(--space-scale))] pb-(--space-section) max-[1000px]:pt-[calc(5rem*var(--space-scale))] max-[1000px]:pb-[calc(6rem*var(--space-scale))] max-[700px]:pt-[calc(3.5rem*var(--space-scale))] max-[700px]:pb-[calc(4.5rem*var(--space-scale))]" aria-labelledby="hero-heading">
+    <p data-hero style="--i:0" class="eyebrow mb-[calc(2rem*var(--space-scale))] text-[.72rem] font-[650] tracking-[.13em] text-accent uppercase">Independent software consulting <span class="mx-[calc(.55rem*var(--space-scale))] text-brand-marker" aria-hidden="true">/</span> Built for the way you work</p>
+    <h1 id="hero-heading" data-hero style="--i:1" class="text-[calc(clamp(3.4rem,7vw,6.75rem)*var(--heading-scale))] leading-[.99] font-[550] tracking-[-.065em] max-[700px]:text-[calc(clamp(2.9rem,10vw,4.3rem)*var(--heading-scale))] max-[700px]:leading-[1.04] max-[700px]:tracking-[-.055em]">Software built<br class="max-[700px]:hidden" /> around <em class="signature inline-block tracking-[-.04em] whitespace-nowrap max-[700px]:whitespace-normal">your business.</em></h1>
+    <div class="hero-body mt-[calc(3rem*var(--space-scale))] grid grid-cols-[minmax(0,35rem)_minmax(0,21rem)] items-end justify-between gap-(--space-layout) max-[1000px]:grid-cols-1 max-[1000px]:gap-[calc(3rem*var(--space-scale))] max-[700px]:mt-[calc(2rem*var(--space-scale))] max-[700px]:gap-[calc(2.5rem*var(--space-scale))]">
+      <div>
+        <p data-hero style="--i:2" class="max-w-[35rem] text-xl leading-[1.55] max-[700px]:max-w-[32rem] max-[700px]:text-[1.0625rem]">Build the tools you need, connect the systems you rely on, and simplify the work in between. MAGNESS provides custom software development with a direct line to the developer building your solution.</p>
+        <div data-hero style="--i:3" class="hero-actions mt-[calc(2rem*var(--space-scale))] flex flex-wrap gap-[calc(.75rem*var(--space-scale))] max-[700px]:mt-[calc(1.5rem*var(--space-scale))] [&_.button]:min-w-[15.5rem] max-[700px]:[&_.button]:min-w-0 max-[700px]:[&_.button]:flex-[1_1_auto]">
+          <a class="button" href="#contact">Discuss your project</a>
+          <a class="button button-outline" href="#services">Explore services</a>
+        </div>
+      </div>
+      <aside data-hero style="--i:4" class="hero-work border-t border-border pt-[calc(1.25rem*var(--space-scale))] max-[1000px]:max-w-[28rem]" aria-labelledby="hero-work-heading">
+        <p id="hero-work-heading" class="text-[.72rem] font-[650] tracking-[.13em] text-muted-foreground uppercase">What I’ve built</p>
+        <ul class="mt-(--space-sm) list-none p-0">
+          {pastWork.map((item) => (
+            <li class="relative border-b border-border py-[calc(.7rem*var(--space-scale))] pl-[calc(1.25rem*var(--space-scale))] text-[.9375rem] before:absolute before:top-[1.3rem] before:left-0 before:h-[.45rem] before:w-[.45rem] before:rounded-[1px] before:bg-brand-marker before:content-[''] last:border-b-0">{item}</li>
+          ))}
+        </ul>
+      </aside>
     </div>
   </section>
 
-  <section id="services" class="services section-shell" aria-labelledby="services-heading">
+  <section id="services" class="services section-shell bg-primary py-(--space-section) text-primary-foreground [--ring:var(--brand-bright)] max-[1000px]:py-[calc(5rem*var(--space-scale))] max-[700px]:py-[calc(3.5rem*var(--space-scale))]" aria-labelledby="services-heading">
     <div class="container">
-      <div class="split services-intro">
-        <h2 id="services-heading">What does your<br /> business need<br /> to do next?</h2>
-        <p>Whether you’re starting with an idea or improving an existing system, the first step is understanding what you need the software to do.</p>
+      <div class="split services-intro items-end pb-[calc(5rem*var(--space-scale))] max-[700px]:gap-[calc(1.5rem*var(--space-scale))] max-[700px]:pb-[calc(2.5rem*var(--space-scale))]" data-reveal>
+        <h2 id="services-heading" class="max-[700px]:[&_br]:hidden">What does your<br /> business need<br /> <em class="signature whitespace-nowrap">to do next?</em></h2>
+        <p class="text-lg text-inverse-muted max-[700px]:text-base">Whether you’re starting with an idea or improving an existing system, the first step is understanding what you need the software to do.</p>
       </div>
       <div class="service-list">
         {services.map((service) => (
-          <article class="service-row split">
-            <h3>{service.title}</h3>
+          <article class="service-row split border-t border-inverse-border pt-[calc(2.5rem*var(--space-scale))] pb-[calc(2.75rem*var(--space-scale))] max-[700px]:gap-(--space-md) max-[700px]:pt-[calc(1.75rem*var(--space-scale))] max-[700px]:pb-(--space-lg)" data-reveal>
             <div>
-              <p>{service.description}</p>
-              <a class="text-link" href="#contact">{service.cta}<span aria-hidden="true">→</span></a>
+            <h3 class="relative pl-[calc(1.45rem*var(--space-scale))] before:absolute before:top-[.65rem] before:left-0 before:h-[.55rem] before:w-[.55rem] before:rounded-[1px] before:bg-brand-marker before:content-[''] max-[700px]:pl-[calc(1.25rem*var(--space-scale))] max-[700px]:before:top-2">{service.title}</h3>
+              <p class="mt-[calc(.9rem*var(--space-scale))] pl-[calc(1.45rem*var(--space-scale))] text-[.8125rem] text-inverse-muted max-[700px]:mt-[calc(.5rem*var(--space-scale))] max-[700px]:pl-[calc(1.25rem*var(--space-scale))]">{service.examples.join(' · ')}</p>
+            </div>
+            <div>
+              <p class="text-lg leading-[1.6] max-[700px]:text-base">{service.description}</p>
+              <a class="text-link mt-[calc(1.25rem*var(--space-scale))] text-brand-bright max-[700px]:mt-(--space-md)" href="#contact">{service.cta}<span aria-hidden="true">→</span></a>
             </div>
           </article>
         ))}
       </div>
-      <div class="services-cta">
-        <p>Not sure where your project fits?</p>
-        <a class="button button-accent" href="#contact">Discuss Your Project</a>
+      <div class="services-cta mt-[calc(3.5rem*var(--space-scale))] flex flex-wrap items-center gap-[calc(1.5rem*var(--space-scale))] border-t border-inverse-border pt-[calc(2.25rem*var(--space-scale))] max-[700px]:mt-[calc(1.25rem*var(--space-scale))] max-[700px]:gap-(--space-md) max-[700px]:pt-[calc(1.75rem*var(--space-scale))]" data-reveal>
+        <p class="text-lg font-medium">Not sure where your project fits?</p>
+        <a class="button button-accent" href="#contact">Discuss your project</a>
       </div>
     </div>
   </section>
 
-  <section id="about" class="about container split" aria-labelledby="about-heading">
-    <h2 id="about-heading">Work directly with<br /> your developer.</h2>
-    <div class="about-copy">
-      <p class="about-lead">I bring around ten years of experience building business applications, integrations, and automation. At MAGNESS, you work with me to define the requirements, make technical decisions, and develop the solution.</p>
-      <p class="experience">My experience in previous roles includes custom CRMs, order and production automation, reporting across multiple data sources, investor-facing dashboards, and document extraction with AI.</p>
-      <a class="text-link" href="#contact">Let’s talk about your project<span aria-hidden="true">→</span></a>
+  <section id="about" class="about container split pt-(--space-section) pb-[calc(7.5rem*var(--space-scale))] max-[1000px]:py-[calc(5rem*var(--space-scale))] max-[700px]:py-[calc(4rem*var(--space-scale))]" aria-labelledby="about-heading">
+    <h2 id="about-heading" data-reveal>Work directly with<br /> <em class="signature whitespace-nowrap">your developer.</em></h2>
+    <div class="about-copy" data-reveal>
+      <p class="about-lead text-2xl leading-[1.5] tracking-[-.02em] max-[700px]:text-[1.1875rem]">I bring a decade of experience building business applications, integrations, and automation. At MAGNESS, you work with me to define the requirements, make technical decisions, and develop the solution.</p>
+      <p class="experience mt-(--space-lg) mb-[calc(1.5rem*var(--space-scale))] max-w-[37rem] text-muted-foreground max-[700px]:mt-[calc(1.5rem*var(--space-scale))] max-[700px]:mb-[calc(1.25rem*var(--space-scale))]">My experience in previous roles includes custom CRMs, order and production automation, reporting dashboards, e-commerce systems, web scraping and data collection, and AI integrations.</p>
+      <a class="text-link text-accent" href="#contact">Let’s talk about your project<span aria-hidden="true">→</span></a>
     </div>
   </section>
 
-  <section id="contact" class="contact section-shell" aria-labelledby="contact-heading">
+  <section id="contact" class="contact section-shell bg-secondary py-(--space-section) max-[1000px]:py-[calc(5rem*var(--space-scale))] max-[700px]:py-[calc(3.5rem*var(--space-scale))]" aria-labelledby="contact-heading">
     <div class="container split">
-      <div class="contact-intro">
-        <h2 id="contact-heading">Tell me what you<br /> want to build—<br />or what needs<br /> to work better.</h2>
-        <p>You don’t need a technical specification to start. Share the idea, the challenge, or the process you’d like to improve, and we can work through the next step.</p>
+      <div class="contact-intro" data-reveal>
+        <h2 id="contact-heading" class="max-[700px]:[&_br]:hidden">Tell me what you<br /> want to build—<br /><em class="signature">or what needs<br /> to work better.</em></h2>
+        <p class="mt-[calc(1.75rem*var(--space-scale))] max-w-[27rem] text-[1.0625rem] max-[700px]:mt-[calc(1.25rem*var(--space-scale))]">{contactEnabled ? 'Share your idea or the process you would like to improve, and I’ll get back to you.' : 'The contact form is coming soon.'}</p>
       </div>
-      <ContactForm />
+      {contactEnabled && <ContactForm />}
     </div>
   </section>
 </BaseLayout>
-<style>
-  .hero { padding-block: 6.5rem 7rem; }
-  h1 { font-size: clamp(3.4rem, 7vw, 6.75rem); line-height: 0.99; letter-spacing: -0.065em; font-weight: 550; }
-  h1 em { color: var(--accent); font-family: var(--font-editorial); font-weight: 400; letter-spacing: -0.04em; white-space: nowrap; }
-  .hero > p { max-width: 35rem; margin-top: 4.5rem; font-size: 1.25rem; line-height: 1.55; }
-  .hero-actions { display: flex; flex-wrap: wrap; gap: 0.75rem; margin-top: 2rem; }
-  .hero-actions .button { min-width: 15.5rem; }
-  .services { padding-block: 7rem; background: var(--primary); color: var(--primary-foreground); --ring: var(--brand-bright); }
-  .services-intro { align-items: end; padding-bottom: 5rem; }
-  .services-intro > p { color: var(--inverse-muted); font-size: 1.125rem; }
-  .service-row { padding-block: 2.5rem 2.75rem; border-top: 1px solid var(--inverse-border); }
-  .service-row h3 { position: relative; padding-left: 1.45rem; }
-  .service-row h3::before { content: ''; position: absolute; width: 0.55rem; height: 0.55rem; border-radius: 1px; left: 0; top: 0.65rem; background: var(--brand-marker); }
-  .service-row p { font-size: 1.125rem; line-height: 1.6; }
-  .service-row .text-link { margin-top: 1.25rem; color: var(--brand-bright); }
-  .services-cta { display: flex; align-items: center; flex-wrap: wrap; gap: 1.5rem; margin-top: 3.5rem; padding-top: 2.25rem; border-top: 1px solid var(--inverse-border); }
-  .services-cta p { font-size: 1.125rem; font-weight: 500; }
-  .about { padding-block: 7rem 7.5rem; }
-  .about-lead { font-size: 1.5rem; line-height: 1.5; letter-spacing: -0.02em; }
-  .experience { margin-block: 2rem 1.5rem; max-width: 37rem; color: var(--muted-foreground); }
-  .contact { padding-block: 7rem; background: var(--secondary); }
-  .contact-intro p { max-width: 27rem; margin-top: 1.75rem; font-size: 1.0625rem; }
-  @media (max-width: 1000px) {
-    .hero { padding-block: 5rem 6rem; }
-    .services, .contact { padding-block: 5rem; }
-    .about { padding-block: 5rem; }
+<script>
+  const motionPreference = matchMedia('(prefers-reduced-motion: reduce)');
+  const sections = [...document.querySelectorAll<HTMLElement>('[data-reveal]')];
+  if ('IntersectionObserver' in window && !motionPreference.matches) {
+    const observer = new IntersectionObserver((entries) => {
+      // Items that enter in the same frame cascade instead of appearing at once.
+      entries.filter((entry) => entry.isIntersecting).forEach((entry, index) => {
+        const target = entry.target as HTMLElement;
+        target.style.setProperty('--reveal-delay', `calc(var(--stagger) * ${index})`);
+        target.classList.remove('is-waiting');
+        observer.unobserve(target);
+      });
+    }, { rootMargin: '0px 0px -12% 0px', threshold: 0 });
+    for (const section of sections) {
+      if (section.getBoundingClientRect().top > window.innerHeight) {
+        section.classList.add('is-waiting');
+        observer.observe(section);
+        section.addEventListener('focusin', () => {
+          section.classList.remove('is-waiting');
+          observer.unobserve(section);
+        }, { once: true });
+      }
+    }
+    motionPreference.addEventListener('change', (event) => {
+      if (event.matches) {
+        sections.forEach((section) => section.classList.remove('is-waiting'));
+        observer.disconnect();
+      }
+    });
   }
-  @media (max-width: 700px) {
-    .hero { padding-block: 3.5rem 4.5rem; }
-    h1 { font-size: clamp(2.9rem, 10vw, 4.3rem); letter-spacing: -0.055em; line-height: 1.04; }
-    h1 em { white-space: normal; }
-    .desktop-break { display: none; }
-    .hero > p { margin-top: 2rem; font-size: 1.0625rem; max-width: 32rem; }
-    .hero-actions { margin-top: 1.5rem; }
-    .hero-actions .button { min-width: 0; flex: 1 1 auto; }
-    .services, .contact { padding-block: 3.5rem; }
-    .services-intro { gap: 1.5rem; padding-bottom: 2.5rem; }
-    .services-intro h2 br { display: none; }
-    .services-intro > p, .service-row p { font-size: 1rem; }
-    .service-row { gap: 1rem; padding-block: 1.75rem 2rem; }
-    .service-row h3 { padding-left: 1.25rem; }
-    .service-row h3::before { top: 0.5rem; }
-    .service-row .text-link { margin-top: 1rem; }
-    .services-cta { margin-top: 1.25rem; padding-top: 1.75rem; gap: 1rem; }
-    .about { padding-block: 4rem; }
-    .about-lead { font-size: 1.1875rem; }
-    .experience { margin-block: 1.5rem 1.25rem; }
-    .contact-intro h2 br { display: none; }
-    .contact-intro p { margin-top: 1.25rem; }
-  }
-</style>
+</script>

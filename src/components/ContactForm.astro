@@ -1,37 +1,37 @@
 ---
 const siteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY;
 ---
-<form id="project-form" class="contact-form" action="/api/contact" method="post">
-  <div class="field-pair">
-    <div class="field">
+<form id="project-form" class="contact-form relative flex flex-col gap-[calc(1.15rem*var(--space-scale))] rounded-lg bg-card p-[calc(2.5rem*var(--space-scale))] text-card-foreground max-[1000px]:p-[calc(1.75rem*var(--space-scale))] max-[700px]:p-[calc(1.5rem*var(--space-scale))] max-[380px]:p-[calc(1.125rem*var(--space-scale))] [&_label]:text-sm [&_label]:font-medium [&_label_span]:font-normal [&_label_span]:text-muted-foreground [&_input]:min-h-12 [&_input]:w-full [&_input]:min-w-0 [&_input]:rounded-md [&_input]:border [&_input]:border-input [&_input]:bg-card [&_input]:px-[calc(.85rem*var(--space-scale))] [&_input]:py-[calc(.7rem*var(--space-scale))] [&_input]:text-foreground [&_textarea]:min-h-36 [&_textarea]:w-full [&_textarea]:resize-y [&_textarea]:rounded-md [&_textarea]:border [&_textarea]:border-input [&_textarea]:bg-card [&_textarea]:px-[calc(.85rem*var(--space-scale))] [&_textarea]:py-[calc(.7rem*var(--space-scale))] [&_textarea]:text-foreground [&_[aria-invalid=true]]:border-destructive" action="/api/contact" method="post">
+  <div class="field-pair grid grid-cols-2 gap-(--space-md) max-[1000px]:grid-cols-1">
+    <div class="field flex min-w-0 flex-col gap-[calc(.4rem*var(--space-scale))]">
       <label for="contact-name">Name</label>
       <input id="contact-name" name="name" autocomplete="name" required maxlength="100" aria-describedby="name-error" />
-      <p id="name-error" class="field-error" hidden></p>
+      <p id="name-error" class="field-error text-[.8125rem] text-destructive" hidden></p>
     </div>
-    <div class="field">
+    <div class="field flex min-w-0 flex-col gap-[calc(.4rem*var(--space-scale))]">
       <label for="contact-email">Email</label>
       <input id="contact-email" name="email" type="email" autocomplete="email" required maxlength="254" aria-describedby="email-error" />
-      <p id="email-error" class="field-error" hidden></p>
+      <p id="email-error" class="field-error text-[.8125rem] text-destructive" hidden></p>
     </div>
   </div>
-  <div class="field">
+  <div class="field flex min-w-0 flex-col gap-[calc(.4rem*var(--space-scale))]">
     <label for="contact-company">Company <span>(optional)</span></label>
     <input id="contact-company" name="company" autocomplete="organization" maxlength="120" aria-describedby="company-error" />
-    <p id="company-error" class="field-error" hidden></p>
+    <p id="company-error" class="field-error text-[.8125rem] text-destructive" hidden></p>
   </div>
-  <div class="field">
+  <div class="field flex min-w-0 flex-col gap-[calc(.4rem*var(--space-scale))]">
     <label for="contact-message">Project description</label>
     <textarea id="contact-message" name="message" rows="5" required minlength="10" maxlength="5000" placeholder="What would you like to build or improve?" aria-describedby="message-error"></textarea>
-    <p id="message-error" class="field-error" hidden></p>
+    <p id="message-error" class="field-error text-[.8125rem] text-destructive" hidden></p>
   </div>
-  <div class="honeypot" aria-hidden="true" inert>
+  <div class="honeypot sr-only" aria-hidden="true" inert>
     <label for="contact-website">Leave this field empty</label>
     <input id="contact-website" name="website" tabindex="-1" autocomplete="off" />
   </div>
   {siteKey && <div class="cf-turnstile" data-sitekey={siteKey} data-theme="light" data-size="flexible"></div>}
-  <button class="button" type="submit">Send Project Details</button>
-  <p id="form-status" class="form-status" role="status" aria-live="polite" tabindex="-1" hidden></p>
-  <p class="privacy-note">Your details are used to respond to your enquiry. <a href="/privacy/">Privacy</a></p>
+  <button class="button self-start" type="submit">Send project details</button>
+  <p id="form-status" class="form-status text-[.9375rem] text-destructive data-[success=true]:text-accent" role="status" aria-live="polite" tabindex="-1" hidden></p>
+  <p class="privacy-note text-xs leading-[1.6] text-muted-foreground">Your details are used to respond to your enquiry. <a href="/privacy/">Privacy</a></p>
   {siteKey && <noscript><p>Please enable JavaScript to complete the spam protection and send your enquiry.</p></noscript>}
 </form>
 {siteKey && <script is:inline src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>}
@@ -82,7 +82,7 @@ const siteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY;
         status.focus();
       } finally {
         button.disabled = false;
-        button.textContent = 'Send Project Details';
+        button.textContent = 'Send project details';
         form.removeAttribute('aria-busy');
         const turnstile = (window as Window & { turnstile?: { reset: () => void } }).turnstile;
         turnstile?.reset();
@@ -90,24 +90,3 @@ const siteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY;
     });
   }
 </script>
-<style>
-  .contact-form { position: relative; display: flex; flex-direction: column; gap: 1.15rem; padding: 2.5rem; border-radius: 0.625rem; background: var(--card); color: var(--card-foreground); }
-  .field-pair { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
-  .field { display: flex; flex-direction: column; gap: 0.4rem; min-width: 0; }
-  label { font-size: 0.875rem; font-weight: 500; }
-  label span { color: var(--muted-foreground); font-weight: 400; }
-  input, textarea { width: 100%; min-width: 0; border: 1px solid var(--input); border-radius: var(--radius); background: var(--card); color: var(--foreground); padding: 0.7rem 0.85rem; line-height: 1.5; }
-  input { min-height: 3rem; }
-  textarea { resize: vertical; min-height: 9rem; }
-  textarea::placeholder { color: var(--muted-foreground); opacity: 1; }
-  [aria-invalid='true'] { border-color: var(--destructive); }
-  .field-error { color: var(--destructive); font-size: 0.8125rem; }
-  .button { align-self: flex-start; }
-  .privacy-note { font-size: 0.75rem; line-height: 1.6; color: var(--muted-foreground); }
-  .form-status { font-size: 0.9375rem; color: var(--destructive); }
-  .form-status[data-success='true'] { color: var(--accent); }
-  .honeypot { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
-  @media (max-width: 1000px) { .contact-form { padding: 1.75rem; } .field-pair { grid-template-columns: 1fr; gap: 1.15rem; } }
-  @media (max-width: 700px) { .contact-form { padding: 1.5rem; } }
-  @media (max-width: 380px) { .contact-form { padding: 1.125rem; } }
-</style>

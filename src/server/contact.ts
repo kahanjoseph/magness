@@ -6,7 +6,12 @@ export interface ContactConfig {
   origin: string;
   email: EmailConfig;
   turnstileSecret?: string;
+  /** Colors for the no-JavaScript reply page, taken from the design tokens. */
+  theme?: ReplyTheme;
 }
+export interface ReplyTheme { background: string; foreground: string; accent: string }
+// System colors keep the page legible if no theme is supplied (e.g. in tests).
+const SYSTEM_THEME: ReplyTheme = { background: 'Canvas', foreground: 'CanvasText', accent: 'LinkText' };
 interface Dependencies {
   send?: typeof sendProjectEnquiry;
   fetcher?: typeof fetch;
@@ -65,7 +70,7 @@ async function readBody(request: Request): Promise<string> {
   return new TextDecoder().decode(bytes);
 }
 
-function reply(request: Request, status: number, message: string, errors?: Errors): Response {
+function reply(request: Request, theme: ReplyTheme, status: number, message: string, errors?: Errors): Response {
   const headers = new Headers({ 'Cache-Control': 'no-store', 'X-Content-Type-Options': 'nosniff' });
   if (status === 429) headers.set('Retry-After', '600');
   if (request.headers.get('accept')?.includes('application/json')) {
@@ -75,14 +80,15 @@ function reply(request: Request, status: number, message: string, errors?: Error
   // Native HTML form fallback. Only fixed application messages appear here.
   headers.set('Content-Type', 'text/html; charset=utf-8');
   const details = errors ? `<ul>${Object.values(errors).map((error) => `<li>${error}</li>`).join('')}</ul>` : '';
-  return new Response(`<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="robots" content="noindex"><title>Project enquiry — MAGNESS</title><style>body{font:18px/1.6 system-ui;background:#f3f4f1;color:#0f1b2d;max-width:42rem;margin:10vh auto;padding:2rem}a{color:#1a6b64}h1{line-height:1.2}</style><main><h1>${status === 200 ? 'Thank you for getting in touch.' : 'Your message hasn’t been sent.'}</h1><p>${message}</p>${details}<a href="/#contact">Return to MAGNESS</a></main></html>`, { status, headers });
+  return new Response(`<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="robots" content="noindex"><title>Project enquiry — MAGNESS</title><style>body{font:18px/1.6 system-ui;background:${theme.background};color:${theme.foreground};max-width:42rem;margin:10vh auto;padding:2rem}a{color:${theme.accent}}h1{line-height:1.2}</style><main><h1>${status === 200 ? 'Thank you for getting in touch.' : 'Your message hasn’t been sent.'}</h1><p>${message}</p>${details}<a href="/#contact">Return to MAGNESS</a></main></html>`, { status, headers });
 }
 
 export async function handleContact(request: Request, client: string, config: ContactConfig, dependencies: Dependencies = {}): Promise<Response> {
-  if (request.headers.get('origin') !== config.origin) return reply(request, 403, 'Please submit your enquiry from the MAGNESS website.');
-  if (!(dependencies.allowRequest ?? allowRequest)(client)) return reply(request, 429, 'Too many attempts. Please wait ten minutes and try again.');
+  const respond = (status: number, message: string, errors?: Errors) => reply(request, config.theme ?? SYSTEM_THEME, status, message, errors);
+  if (request.headers.get('origin') !== config.origin) return respond(403, 'Please submit your enquiry from the MAGNESS website.');
+  if (!(dependencies.allowRequest ?? allowRequest)(client)) return respond(429, 'Too many attempts. Please wait ten minutes and try again.');
   const type = request.headers.get('content-type')?.split(';')[0].trim();
-  if (type !== 'application/json' && type !== 'application/x-www-form-urlencoded') return reply(request, 415, 'This submission format is not supported.');
+  if (type !== 'application/json' && type !== 'application/x-www-form-urlencoded') return respond(415, 'This submission format is not supported.');
   let input: Record<string, unknown>;
   try {
     const body = await readBody(request);
@@ -90,26 +96,26 @@ export async function handleContact(request: Request, client: string, config: Co
     if (!parsed || typeof parsed !== 'object' || Array.isArray(parsed)) throw new Error('invalid');
     input = parsed;
   } catch (error) {
-    return reply(request, error instanceof Error && error.message === 'too-large' ? 413 : 400, 'The submission could not be read. Please check the form and try again.');
+    return respond(error instanceof Error && error.message === 'too-large' ? 413 : 400, 'The submission could not be read. Please check the form and try again.');
   }
-  if (input.website) return reply(request, 200, SUCCESS);
+  if (input.website) return respond(200, SUCCESS);
   const { enquiry, errors } = validateEnquiry(input);
-  if (Object.keys(errors).length) return reply(request, 422, 'Please check the highlighted fields.', errors);
-  if (!isEmailConfigured(config.email)) return reply(request, 503, UNAVAILABLE);
+  if (Object.keys(errors).length) return respond(422, 'Please check the highlighted fields.', errors);
+  if (!isEmailConfigured(config.email) || !config.turnstileSecret) return respond(503, UNAVAILABLE);
   const fetcher = dependencies.fetcher ?? fetch;
   if (config.turnstileSecret) {
     const token = input['cf-turnstile-response'];
-    if (typeof token !== 'string' || !token || token.length > 2048) return reply(request, 422, 'Please complete the spam protection and try again.');
+    if (typeof token !== 'string' || !token || token.length > 2048) return respond(422, 'Please complete the spam protection and try again.');
     try {
       const verification = await fetcher('https://challenges.cloudflare.com/turnstile/v0/siteverify', {
         method: 'POST', body: new URLSearchParams({ secret: config.turnstileSecret, response: token }), signal: AbortSignal.timeout(5000),
       });
       const result = await verification.json() as { success?: boolean; hostname?: string };
-      if (!verification.ok || !result.success || result.hostname !== new URL(config.origin).hostname) return reply(request, 422, 'Spam protection could not be verified. Please try again.');
-    } catch { return reply(request, 503, UNAVAILABLE); }
+      if (!verification.ok || !result.success || result.hostname !== new URL(config.origin).hostname) return respond(422, 'Spam protection could not be verified. Please try again.');
+    } catch { return respond(503, UNAVAILABLE); }
   }
   try {
     await (dependencies.send ?? sendProjectEnquiry)(enquiry, config.email, fetcher);
-    return reply(request, 200, SUCCESS);
-  } catch { return reply(request, 502, 'Your message could not be sent right now. Please try again later.'); }
+    return respond(200, SUCCESS);
+  } catch { return respond(502, 'Your message could not be sent right now. Please try again later.'); }
 }

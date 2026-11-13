@@ -1,0 +1,238 @@
+---
+import '../styles/global.css';
+import { token } from '../styles/tokens';
+const designField = 'block pt-3.5 text-xs font-semibold [&_output]:float-right [&_output]:font-normal [&_output]:text-[#71827e] [&_input]:mt-2 [&_input]:block [&_input]:w-full [&_input]:accent-[#1a6b64] [&_select]:mt-2 [&_select]:block [&_select]:w-full [&_select]:rounded-md [&_select]:border [&_select]:border-[#d5dedb] [&_select]:bg-white [&_select]:p-2 [&_select]:text-[#172739]';
+const colors = ([
+  { name: 'Page background', variable: '--background' },
+  { name: 'Main text', variable: '--foreground' },
+  { name: 'Dark sections & buttons', variable: '--primary' },
+  { name: 'Text on dark sections', variable: '--primary-foreground' },
+  { name: 'Contact background', variable: '--secondary' },
+  { name: 'Accent', variable: '--accent' },
+  { name: 'Bright accent', variable: '--brand-bright' },
+  { name: 'Small markers', variable: '--brand-marker' },
+  { name: 'Muted text', variable: '--muted-foreground' },
+  { name: 'Text on dark sections, muted', variable: '--inverse-muted' },
+  { name: 'Dividers', variable: '--border' },
+  { name: 'Dividers on dark sections', variable: '--inverse-border' },
+] as const).map((color) => ({ ...color, value: token(color.variable) }));
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex, nofollow" />
+    <title>Color studio — MAGNESS</title>
+  </head>
+  <body>
+    <div class="studio flex min-h-screen bg-[#e9eeec] font-[Arial,sans-serif] text-[#172739]">
+      <aside class="panel h-screen w-80 shrink-0 overflow-y-auto border-r border-[#d5dedb] bg-white px-6 py-7 max-[700px]:fixed max-[700px]:z-2 max-[700px]:h-dvh max-[700px]:w-[min(320px,85vw)] max-[700px]:shadow-xl" id="palette-panel" aria-label="Color controls">
+        <div class="panel-head flex items-center justify-between gap-2.5"><div class="panel-heading"><p class="m-0 text-[9px] font-bold tracking-[.14em] text-[#71827e]">MAGNESS / DESIGN STUDIO</p><h1 class="mt-2 text-[25px] font-bold tracking-[-1px]">Color studio<span class="text-[#1a6b64]">.</span></h1></div><button class="h-9 w-9 shrink-0 rounded-lg border border-[#dce4e1] bg-[#f7f9f8] text-2xl leading-none text-[#294a44]" type="button" id="collapse" aria-label="Collapse color controls" aria-expanded="true" aria-controls="controls">‹</button></div>
+        <div id="controls" class="controls">
+          <p class="mt-9 mb-2 text-base font-bold">Make it yours.</p>
+          <p class="m-0 text-[13px] leading-relaxed text-[#697a76]">Explore colors on a live copy of the homepage. Changes stay in this browser and don’t affect the site.</p>
+          <div class="mt-8 flex items-center justify-between border-b border-[#e4eae7] pb-2.5 text-[10px] font-bold tracking-[.1em] text-[#71827e]"><span>LAYOUT & TYPE</span><button class="bg-transparent py-1 text-xs tracking-normal text-[#1a6b64]" type="button" id="reset-design">Reset</button></div>
+          <label class={designField}>Spacing <output id="spacing-value">100%</output><input id="spacing" type="range" min="50" max="180" step="5" value="100" /></label>
+          <label class={designField}>Roundness <output id="roundness-value">6px</output><input id="roundness" type="range" min="0" max="28" step="1" value="6" /></label>
+          <label class={designField}>Body size <output id="body-size-value">100%</output><input id="body-size" type="range" min="85" max="130" step="5" value="100" /></label>
+          <label class={designField}>Heading size <output id="heading-size-value">100%</output><input id="heading-size" type="range" min="80" max="125" step="5" value="100" /></label>
+          <label class={designField}>Content width <output id="content-width-value">72rem</output><input id="content-width" type="range" min="56" max="84" step="2" value="72" /></label>
+          <label class={designField}>Motion duration <output id="motion-value">100%</output><input id="motion" type="range" min="0" max="200" step="10" value="100" /></label>
+          <label class={designField}>Header shadow <output id="shadow-value">100%</output><input id="shadow" type="range" min="0" max="200" step="10" value="100" /></label>
+          <label class={designField}>Body font<select id="body-font"><option value="geist">Geist</option><option value="system">System sans</option><option value="arial">Arial</option><option value="georgia">Georgia</option></select></label>
+          <label class={designField}>Headline accent font<select id="accent-font"><option value="instrument">Instrument Serif</option><option value="georgia">Georgia</option><option value="geist">Geist</option><option value="system">System sans</option></select></label>
+          <button class="mt-6 flex w-full items-center gap-2 rounded-md bg-[#1a6b64] px-3 py-3 text-left text-xs font-bold text-white hover:bg-[#14554f]" type="button" id="randomize"><span aria-hidden="true">✳</span> Generate a palette <span class="ml-auto" aria-hidden="true">↗</span></button>
+          <p class="mt-2 text-[11px] leading-normal text-[#71827e]">Try a new combination, then fine-tune any color below.</p>
+          <div class="mt-8 flex items-center justify-between border-b border-[#e4eae7] pb-2.5 text-[10px] font-bold tracking-[.1em] text-[#71827e]"><span>YOUR PALETTE</span><button class="bg-transparent py-1 text-xs tracking-normal text-[#1a6b64]" type="button" id="reset">Reset</button></div>
+          <div class="color-list">
+            {colors.map((color) => <label class="flex items-center justify-between gap-2 border-b border-[#edf1ef] py-3 text-xs font-semibold"><span>{color.name}<small class="mt-[3px] block text-[10px] font-normal text-[#8a9995]">{color.variable}</small></span><span class="swatch flex items-center gap-[5px] text-[10px] font-normal text-[#6d7c78]"><input class="h-8 w-8 cursor-pointer rounded-md border border-[#dce4e1] bg-white p-0.5" type="color" value={color.value} data-variable={color.variable} data-default={color.value} aria-label={color.name} /><output>{color.value.toUpperCase()}</output></span></label>)}
+          </div>
+          <button class="mt-6 flex w-full justify-between rounded-md bg-[#132639] px-3.5 py-3 text-xs font-bold text-white" type="button" id="copy">Copy design tokens <span aria-hidden="true">↗</span></button>
+          <div class="mt-3 text-xs" id="manual-copy" hidden><label for="color-values">Select and copy these values:</label><textarea class="mt-1.5 block w-full rounded-md border border-[#c8d2ce] p-2 font-mono text-[11px] leading-normal" id="color-values" readonly rows="8"></textarea></div>
+          <p id="status" class="min-h-[1em] text-xs text-[#1a6b64]" role="status" aria-live="polite"></p>
+          <a class="text-xs text-[#62736f]" href="/" target="_blank" rel="noopener">Open the homepage ↗</a>
+        </div>
+      </aside>
+      <main class="flex h-screen min-w-0 flex-1 flex-col px-5 pt-5 max-[700px]:h-dvh max-[700px]:p-0"><div class="flex min-h-[42px] items-center justify-between rounded-t-lg border border-[#d9e0dd] bg-[#f8faf9] px-4 text-[10px] font-bold tracking-[.1em] text-[#75847f] max-[700px]:rounded-none max-[700px]:pl-[75px]"><span class="flex gap-[5px] [&_i]:h-1.5 [&_i]:w-1.5 [&_i]:rounded-full [&_i]:bg-[#c4ceca]" aria-hidden="true"><i></i><i></i><i></i></span><span>HOMEPAGE PREVIEW</span><span class="flex items-center gap-1.5"><i class="h-1.5 w-1.5 rounded-full bg-[#56a98e]"></i> LIVE PREVIEW</span></div><iframe class="block w-full flex-1 border border-t-0 border-[#d9e0dd] bg-white" id="site-preview" src="/" title="Magness homepage preview"></iframe></main>
+    </div>
+    <script>
+      const iframe = document.querySelector<HTMLIFrameElement>('#site-preview')!;
+      const inputs = [...document.querySelectorAll<HTMLInputElement>('input[type="color"]')];
+      const status = document.querySelector<HTMLElement>('#status')!;
+      const panel = document.querySelector<HTMLElement>('#palette-panel')!;
+      const toggle = document.querySelector<HTMLButtonElement>('#collapse')!;
+      const storageKey = 'magness-color-studio-v1';
+      const designKey = 'magness-design-studio-v1';
+      const spacing = document.querySelector<HTMLInputElement>('#spacing')!;
+      const roundness = document.querySelector<HTMLInputElement>('#roundness')!;
+      const bodySize = document.querySelector<HTMLInputElement>('#body-size')!;
+      const headingSize = document.querySelector<HTMLInputElement>('#heading-size')!;
+      const contentWidth = document.querySelector<HTMLInputElement>('#content-width')!;
+      const motion = document.querySelector<HTMLInputElement>('#motion')!;
+      const shadow = document.querySelector<HTMLInputElement>('#shadow')!;
+      const bodyFont = document.querySelector<HTMLSelectElement>('#body-font')!;
+      const accentFont = document.querySelector<HTMLSelectElement>('#accent-font')!;
+      const fonts: Record<string, string> = {
+        geist: "'Geist Variable', Arial, sans-serif", instrument: "'Instrument Serif', Georgia, serif",
+        system: 'system-ui, sans-serif', arial: 'Arial, sans-serif', georgia: 'Georgia, serif',
+      };
+      const collapsedClasses = ['!w-16', '!px-3', 'max-[700px]:!w-[60px]', 'max-[700px]:!h-auto', 'max-[700px]:!p-2.5'];
+      function setCollapsed(collapsed: boolean) {
+        panel.classList.toggle('collapsed', collapsed);
+        collapsedClasses.forEach((name) => panel.classList.toggle(name, collapsed));
+        document.querySelector<HTMLElement>('.panel-heading')!.hidden = collapsed;
+        document.querySelector<HTMLElement>('#controls')!.hidden = collapsed;
+        toggle.setAttribute('aria-expanded', String(!collapsed));
+        toggle.setAttribute('aria-label', collapsed ? 'Expand color controls' : 'Collapse color controls');
+        toggle.textContent = collapsed ? '›' : '‹';
+      }
+      if (matchMedia('(max-width: 700px)').matches) setCollapsed(true);
+      let saved: Record<string, string> = {};
+      try { saved = JSON.parse(localStorage.getItem(storageKey) || '{}') || {}; } catch { saved = {}; }
+      for (const input of inputs) {
+        const value = saved[input.dataset.variable || ''];
+        if (typeof value === 'string' && /^#[0-9a-f]{6}$/i.test(value)) input.value = value;
+      }
+      try {
+        const design = JSON.parse(localStorage.getItem(designKey) || '{}');
+        if (Number.isFinite(design.spacing)) spacing.value = String(design.spacing);
+        if (Number.isFinite(design.roundness)) roundness.value = String(design.roundness);
+        if (Number.isFinite(design.bodySize)) bodySize.value = String(design.bodySize);
+        if (Number.isFinite(design.headingSize)) headingSize.value = String(design.headingSize);
+        if (Number.isFinite(design.contentWidth)) contentWidth.value = String(design.contentWidth);
+        if (Number.isFinite(design.motion)) motion.value = String(design.motion);
+        if (Number.isFinite(design.shadow)) shadow.value = String(design.shadow);
+        if (['geist', 'system', 'arial', 'georgia'].includes(design.bodyFont)) bodyFont.value = design.bodyFont;
+        if (['instrument', 'georgia', 'geist', 'system'].includes(design.accentFont)) accentFont.value = design.accentFont;
+      } catch { /* Use the default design. */ }
+      function apply() {
+        const root = iframe.contentDocument?.documentElement;
+        for (const input of inputs) {
+          root?.style.setProperty(input.dataset.variable!, input.value);
+          input.closest('.swatch')?.querySelector('output')?.replaceChildren(input.value.toUpperCase());
+        }
+        root?.style.setProperty('--space-scale', String(Number(spacing.value) / 100));
+        root?.style.setProperty('--radius', `${roundness.value}px`);
+        root?.style.setProperty('--font-size-body', `${Number(bodySize.value) / 100}rem`);
+        root?.style.setProperty('--heading-scale', String(Number(headingSize.value) / 100));
+        root?.style.setProperty('--content-width', `${contentWidth.value}rem`);
+        root?.style.setProperty('--motion-scale', String(Number(motion.value) / 100));
+        root?.style.setProperty('--shadow-strength', String(Number(shadow.value) / 100));
+        root?.style.setProperty('--font-body', fonts[bodyFont.value]);
+        root?.style.setProperty('--font-editorial', fonts[accentFont.value]);
+        document.querySelector<HTMLOutputElement>('#spacing-value')!.textContent = `${spacing.value}%`;
+        document.querySelector<HTMLOutputElement>('#roundness-value')!.textContent = `${roundness.value}px`;
+        document.querySelector<HTMLOutputElement>('#body-size-value')!.textContent = `${bodySize.value}%`;
+        document.querySelector<HTMLOutputElement>('#heading-size-value')!.textContent = `${headingSize.value}%`;
+        document.querySelector<HTMLOutputElement>('#content-width-value')!.textContent = `${contentWidth.value}rem`;
+        document.querySelector<HTMLOutputElement>('#motion-value')!.textContent = `${motion.value}%`;
+        document.querySelector<HTMLOutputElement>('#shadow-value')!.textContent = `${shadow.value}%`;
+      }
+      function saveDesign() {
+        try { localStorage.setItem(designKey, JSON.stringify({ spacing: Number(spacing.value), roundness: Number(roundness.value), bodySize: Number(bodySize.value), headingSize: Number(headingSize.value), contentWidth: Number(contentWidth.value), motion: Number(motion.value), shadow: Number(shadow.value), bodyFont: bodyFont.value, accentFont: accentFont.value })); }
+        catch { status.textContent = 'Design settings could not be saved in this browser.'; }
+        apply();
+      }
+      [spacing, roundness, bodySize, headingSize, contentWidth, motion, shadow, bodyFont, accentFont].forEach((input) => input.addEventListener('input', saveDesign));
+      document.querySelector<HTMLButtonElement>('#reset-design')!.addEventListener('click', () => {
+        spacing.value = '100'; roundness.value = '6'; bodySize.value = '100'; headingSize.value = '100'; contentWidth.value = '72'; motion.value = '100'; shadow.value = '100'; bodyFont.value = 'geist'; accentFont.value = 'instrument';
+        saveDesign(); status.textContent = 'Default layout and fonts restored.';
+      });
+      function save() {
+        const palette = Object.fromEntries(inputs.map((input) => [input.dataset.variable!, input.value]));
+        try { localStorage.setItem(storageKey, JSON.stringify(palette)); } catch { status.textContent = 'Colors could not be saved in this browser.'; }
+        apply();
+      }
+      function hslToHex(hue: number, saturation: number, lightness: number) {
+        const h = ((hue % 360) + 360) % 360 / 30;
+        const s = saturation / 100;
+        const l = lightness / 100;
+        const a = s * Math.min(l, 1 - l);
+        const channel = (n: number) => {
+          const k = (n + h) % 12;
+          return Math.round(255 * (l - a * Math.max(-1, Math.min(k - 3, 9 - k, 1)))).toString(16).padStart(2, '0');
+        };
+        return `#${channel(0)}${channel(8)}${channel(4)}`;
+      }
+      function luminance(hex: string) {
+        const channels = [1, 3, 5].map((i) => parseInt(hex.slice(i, i + 2), 16) / 255)
+          .map((c) => c <= 0.04045 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4);
+        return 0.2126 * channels[0] + 0.7152 * channels[1] + 0.0722 * channels[2];
+      }
+      function contrast(a: string, b: string) {
+        const [dark, light] = [luminance(a), luminance(b)].sort((x, y) => x - y);
+        return (light + 0.05) / (dark + 0.05);
+      }
+      function readable(hue: number, saturation: number, lightness: number, backgrounds: string[], toward: 0 | 100) {
+        let l = lightness;
+        let color = hslToHex(hue, saturation, l);
+        while (backgrounds.some((background) => contrast(color, background) < 4.5) && l !== toward) {
+          l += toward === 0 ? -1 : 1;
+          color = hslToHex(hue, saturation, l);
+        }
+        return color;
+      }
+      function randomBetween(min: number, max: number) {
+        return Math.floor(min + Math.random() * (max - min + 1));
+      }
+      document.querySelector<HTMLButtonElement>('#randomize')!.addEventListener('click', () => {
+        const hue = randomBetween(0, 359);
+        const schemes = [[0, 30, 65], [0, 120, 240], [0, 150, 210], [0, 90, 200], [0, 55, 180]];
+        const offsets = schemes[randomBetween(0, schemes.length - 1)];
+        const surfaceHue = hue + offsets[0];
+        const inkHue = hue + offsets[1] + randomBetween(-15, 15);
+        const accentHue = hue + offsets[2] + randomBetween(-15, 15);
+        const darkPage = Math.random() < 0.5;
+        const towardText = darkPage ? 100 : 0;
+        const towardInverse = darkPage ? 0 : 100;
+        const background = hslToHex(surfaceHue, randomBetween(10, 65), darkPage ? randomBetween(5, 12) : randomBetween(93, 98));
+        const primary = hslToHex(inkHue, randomBetween(25, 65), darkPage ? randomBetween(91, 97) : randomBetween(7, 15));
+        const secondary = hslToHex(accentHue + randomBetween(-35, 35), randomBetween(20, 60), darkPage ? randomBetween(13, 21) : randomBetween(88, 95));
+        const foreground = readable(inkHue, randomBetween(15, 45), darkPage ? 95 : 12, [background, secondary], towardText);
+        const primaryForeground = readable(inkHue, randomBetween(15, 35), darkPage ? 12 : 96, [primary], towardInverse);
+        const palette: Record<string, string> = {
+          '--background': background,
+          '--foreground': foreground,
+          '--primary': primary,
+          '--primary-foreground': primaryForeground,
+          '--secondary': secondary,
+          '--accent': readable(accentHue, randomBetween(40, 80), darkPage ? randomBetween(66, 82) : randomBetween(22, 38), [background], towardText),
+          '--brand-bright': readable(accentHue + randomBetween(-35, 35), randomBetween(35, 80), darkPage ? randomBetween(20, 36) : randomBetween(67, 85), [primary, foreground], towardInverse),
+          '--brand-marker': hslToHex(accentHue + randomBetween(-60, 60), randomBetween(45, 85), randomBetween(45, 75)),
+          '--muted-foreground': readable(inkHue, randomBetween(10, 35), darkPage ? 72 : 35, [background], towardText),
+          '--inverse-muted': readable(inkHue, randomBetween(10, 35), darkPage ? 35 : 72, [primary], towardInverse),
+          '--border': hslToHex(surfaceHue, randomBetween(10, 40), darkPage ? 38 : 76),
+          '--inverse-border': hslToHex(inkHue, randomBetween(10, 40), darkPage ? 75 : 32),
+        };
+        inputs.forEach((input) => { input.value = palette[input.dataset.variable!] || input.value; });
+        save(); status.textContent = `${darkPage ? 'Dark' : 'Light'} palette generated. Adjust any color to make it yours.`;
+      });
+      iframe.addEventListener('load', apply);
+      inputs.forEach((input) => input.addEventListener('input', save));
+      toggle.addEventListener('click', () => {
+        setCollapsed(!panel.classList.contains('collapsed'));
+      });
+      document.querySelector<HTMLButtonElement>('#reset')!.addEventListener('click', () => {
+        inputs.forEach((input) => { input.value = input.dataset.default!; });
+        save(); status.textContent = 'Default colors restored.';
+      });
+      document.querySelector<HTMLButtonElement>('#copy')!.addEventListener('click', async () => {
+        const text = [...inputs.map((input) => `${input.dataset.variable}: ${input.value};`), `--space-scale: ${Number(spacing.value) / 100};`, `--radius: ${roundness.value}px;`, `--font-size-body: ${Number(bodySize.value) / 100}rem;`, `--heading-scale: ${Number(headingSize.value) / 100};`, `--content-width: ${contentWidth.value}rem;`, `--motion-scale: ${Number(motion.value) / 100};`, `--shadow-strength: ${Number(shadow.value) / 100};`, `--font-body: ${fonts[bodyFont.value]};`, `--font-editorial: ${fonts[accentFont.value]};`].join('\n');
+        const manual = document.querySelector<HTMLElement>('#manual-copy')!;
+        const field = document.querySelector<HTMLTextAreaElement>('#color-values')!;
+        field.value = text;
+        try {
+          if (!navigator.clipboard) throw new Error('Clipboard unavailable');
+          await navigator.clipboard.writeText(text);
+          manual.hidden = true;
+          status.textContent = 'Color values copied.';
+        } catch {
+          manual.hidden = false;
+          field.focus(); field.select();
+          status.textContent = 'Press Ctrl+C (or Command+C on Mac) to copy the selected values.';
+        }
+      });
+    </script>
+  </body>
+</html>
