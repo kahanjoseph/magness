@@ -22,6 +22,8 @@ npm start
 
 The standalone Node build serves the generated pages and `/api/contact`. Production environment variables can be supplied by the host or an untracked `.env` file. `HOST` and `PORT` control the production listener. A static file server alone cannot handle the contact endpoint.
 
+GitHub Actions runs the type check, tests, and production build on pushes and pull requests. This workflow does not deploy the site; deployment requires a configured Node hosting destination.
+
 ## Design and content
 
 - `src/styles/global.css`: Harbor palette, semantic theme tokens, typography and shared layout styles.
