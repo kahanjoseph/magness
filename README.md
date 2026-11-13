@@ -22,7 +22,7 @@ npm start
 
 The standalone Node build serves the generated pages and `/api/contact`. Production environment variables can be supplied by the host or an untracked `.env` file. `HOST` and `PORT` control the production listener. A static file server alone cannot handle the contact endpoint.
 
-GitHub Actions runs the type check, tests, and production build on pushes and pull requests. This workflow does not deploy the site; deployment requires a configured Node hosting destination.
+GitHub Actions runs the type check, tests, and production build on pushes and pull requests. A separately configured server timer can run `scripts/deploy-poll.py` every five minutes. It deploys only the current `main` commit after that commit's push CI run succeeds, builds in a separate directory, and restores the previous release if restart or the local health check fails. The server stores runtime credentials outside the checkout and retains previous releases for recovery. The polling script installed on the server is managed separately; changes to it require reinstalling that script.
 
 ## Design and content
 

@@ -1,0 +1,7 @@
+[Unit]
+Description=Check MAGNESS main branch and deploy after successful CI
+After=network-online.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/python3 %h/.local/lib/magness/deploy-poll.py
