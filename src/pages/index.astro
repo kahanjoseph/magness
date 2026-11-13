@@ -5,7 +5,8 @@ import { services } from '../data/services';
 const contactEnabled = import.meta.env.PUBLIC_CONTACT_FORM_ENABLED === 'true' && Boolean(import.meta.env.PUBLIC_TURNSTILE_SITE_KEY);
 ---
 <BaseLayout>
-  <section class="hero container pt-[calc(6.5rem*var(--space-scale))] pb-(--space-section) max-[1000px]:pt-[calc(5rem*var(--space-scale))] max-[1000px]:pb-[calc(6rem*var(--space-scale))] max-[700px]:pt-[calc(3.5rem*var(--space-scale))] max-[700px]:pb-[calc(4.5rem*var(--space-scale))]" aria-labelledby="hero-heading">
+  <section class="hero pt-[calc(6.5rem*var(--space-scale))] pb-(--space-section) max-[1000px]:pt-[calc(5rem*var(--space-scale))] max-[1000px]:pb-[calc(6rem*var(--space-scale))] max-[700px]:pt-[calc(3.5rem*var(--space-scale))] max-[700px]:pb-[calc(4.5rem*var(--space-scale))]" aria-labelledby="hero-heading">
+    <div class="container">
     <p data-hero style="--i:0" class="eyebrow mb-[calc(2rem*var(--space-scale))] text-[.72rem] font-[650] tracking-[.13em] text-accent uppercase">Independent software consulting <span class="mx-[calc(.55rem*var(--space-scale))] text-brand-marker" aria-hidden="true">/</span> Built for the way you work</p>
     <h1 id="hero-heading" data-hero style="--i:1" class="text-[calc(clamp(3.4rem,7vw,6.75rem)*var(--heading-scale))] leading-[.99] font-[550] tracking-[-.065em] max-[700px]:text-[calc(clamp(2.9rem,10vw,4.3rem)*var(--heading-scale))] max-[700px]:leading-[1.04] max-[700px]:tracking-[-.055em]">Software built<br class="max-[700px]:hidden" /> around <em class="signature inline-block tracking-[-.04em] whitespace-nowrap max-[700px]:whitespace-normal">your business.</em></h1>
     <div class="hero-body mt-[calc(3rem*var(--space-scale))] max-[700px]:mt-[calc(2rem*var(--space-scale))]">
@@ -16,6 +17,7 @@ const contactEnabled = import.meta.env.PUBLIC_CONTACT_FORM_ENABLED === 'true' &&
           <a class="button button-outline" href="#services">Explore services</a>
         </div>
       </div>
+    </div>
     </div>
   </section>
 
