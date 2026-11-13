@@ -24,6 +24,8 @@ The standalone Node build serves the generated pages and `/api/contact`. Product
 
 GitHub Actions runs the type check, tests, and production build on pushes and pull requests. A separately configured server timer can run `scripts/deploy-poll.py` every five minutes. It deploys only the current `main` commit after that commit's push CI run succeeds, builds in a separate directory, and restores the previous release if restart or the local health check fails. The server stores runtime credentials outside the checkout and retains previous releases for recovery. The polling script installed on the server is managed separately; changes to it require reinstalling that script.
 
+When the timer is first enabled, its baseline records the current GitHub commit without deploying it; the next qualifying push triggers the first automated deployment. The baseline is not a record of what's currently running.
+
 ## Design and content
 
 - `src/styles/global.css`: Harbor palette, semantic theme tokens, typography and shared layout styles.

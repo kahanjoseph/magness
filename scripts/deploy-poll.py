@@ -96,6 +96,7 @@ def deploy(sha):
             subprocess.run(["sudo", "-n", "/usr/bin/systemctl", "restart", "magness.service"], check=False)
             raise
         (STATE / "deployed-sha").write_text(sha + "\n", encoding="utf-8")
+        (STATE / "baseline-sha").unlink(missing_ok=True)
         print(f"Deployed {sha}; previous release retained at {backup}")
 
 
@@ -109,6 +110,9 @@ def main():
         sha = main_sha()
         marker = STATE / "deployed-sha"
         if marker.exists() and marker.read_text(encoding="utf-8").strip() == sha:
+            return
+        baseline = STATE / "baseline-sha"
+        if baseline.exists() and baseline.read_text(encoding="utf-8").strip() == sha:
             return
         if not ci_passed(sha):
             print(f"Waiting for successful CI for {sha}")

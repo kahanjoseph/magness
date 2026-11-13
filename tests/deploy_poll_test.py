@@ -31,6 +31,10 @@ class DeploymentGateTests(unittest.TestCase):
             (Path(directory) / "deployed-sha").write_text(sha)
             poll.main()
             deploy.assert_not_called()
+            (Path(directory) / "deployed-sha").unlink()
+            (Path(directory) / "baseline-sha").write_text(sha)
+            poll.main()
+            deploy.assert_not_called()
 
     def test_failed_restart_restores_previous_release(self):
         sha = "a" * 40
